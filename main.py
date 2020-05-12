@@ -19,10 +19,12 @@ def get_and_search_page(query):
     header_elems = soup.find_all("div", class_ = "_3wU53n")
     span_elems = soup.find_all("div", class_ = "_1vC4OE _2rQ-NK")
     item_list = []
+    total_prices = 0
     for header_elem, span_elem in zip(header_elems, span_elems):
         dict = {}
         dict["Name"] = header_elem.text
         dict["Price"] = span_elem.text[1:]
+        total_prices += int(span_elem.text[1:].replace(",", "_"))
         item_list.append(dict)
     if len(item_list) == 0:
         page_content = requests.get(URL).content
@@ -33,6 +35,7 @@ def get_and_search_page(query):
             dict = {}
             dict["Name"] = item.get("title")
             dict["Price"] = price.text[1:]
+            total_prices += int(price.text[1:].replace(",", "_"))
             item_list.append(dict)
     # final steps
     json.dump(item_list, open("items.json", "w"), indent = 4)
@@ -41,6 +44,7 @@ def get_and_search_page(query):
     if os.path.exists("items.json"):
         os.system("cat items.json")
         os.system("echo")
+        print("\nAverage Price: {}\n".format(total_prices/len(item_list)))
     print("-"*45 + "ITEMS.JSON" + "-"*45)
 
 if __name__ == "__main__":
