@@ -37,11 +37,16 @@ def get_and_search_page(query):
     # final steps
     json.dump(item_list, open("items.json", "w"), indent = 4)
     print("Done, check the json file")
+    print("-"*45 + "ITEMS.JSON" + "-"*45)
+    if os.path.exists("items.json"):
+        os.system("cat items.json")
+        os.system("echo")
+    print("-"*45 + "ITEMS.JSON" + "-"*45)
 
 if __name__ == "__main__":
     while True:
         try:
-            query = input("Enter item to search on flipkart: ").strip()
+            query = input("\nEnter item to search on flipkart: ").strip()
             get_and_search_page(query)
         except KeyboardInterrupt:
             os.system("echo")
