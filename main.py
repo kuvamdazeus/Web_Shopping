@@ -18,12 +18,14 @@ def get_and_search_page(query):
     soup = BeautifulSoup(response.content, "html.parser")
     header_elems = soup.find_all("div", class_ = "_3wU53n")
     span_elems = soup.find_all("div", class_ = "_1vC4OE _2rQ-NK")
+    ratings = soup.find_all("div", class_ = "hGSR34")
     item_list = []
     total_prices = 0
-    for header_elem, span_elem in zip(header_elems, span_elems):
+    for header_elem, span_elem, rating in zip(header_elems, span_elems, ratings):
         dict = {}
         dict["Name"] = header_elem.text
         dict["Price"] = span_elem.text[1:]
+        dict["Ratings"] = rating.text
         total_prices += int(span_elem.text[1:].replace(",", "_"))
         item_list.append(dict)
     if len(item_list) == 0:
@@ -31,10 +33,12 @@ def get_and_search_page(query):
         new_soup = BeautifulSoup(page_content, "html.parser")
         items = new_soup.find_all("a", class_ = "_2cLu-l")
         prices = new_soup.find_all("div", class_ = "_1vC4OE")
-        for item, price in zip(items, prices):
+        ratings = new_soup.find_all("div", class_ = "hGSR34")
+        for item, price, rating in zip(items, prices, ratings):
             dict = {}
             dict["Name"] = item.get("title")
             dict["Price"] = price.text[1:]
+            dict["Ratings"] = rating.text
             total_prices += int(price.text[1:].replace(",", "_"))
             item_list.append(dict)
     # final steps
